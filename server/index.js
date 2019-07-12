@@ -2,6 +2,7 @@ require('dotenv').config({ path: __dirname + '/../.env'})
 const express = require('express')
 // const session = require('express-session')
 const massive = require('massive')
+const ctrl = require('./controller')
 const {
     SERVER_PORT,
     CONNECTION_STRING,
