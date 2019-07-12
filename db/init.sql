@@ -6,3 +6,15 @@ CREATE TABLE IF NOT EXISTS houses (
     state TEXT,
     zip INTEGER
 );
+
+
+-- ALTERATIONS TO TABLE FOR PART 2
+ALTER TABLE houses
+ADD COLUMN image TEXT,
+ADD COLUMN mortgage INTEGER,
+ADD COLUMN rent INTEGER;
+
+UPDATE houses
+SET image = '',
+    mortgage = 0,
+    rent = 0;
