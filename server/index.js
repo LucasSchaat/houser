@@ -19,6 +19,10 @@ massive(CONNECTION_STRING)
         console.log('db connected')
     })
 
+app.get('/api/houses', ctrl.getHouses)
+app.post('/api/add', ctrl.addHouse)
+app.put('/api/delete/:id', ctrl.deleteHouse)
+
 app.listen(SERVER_PORT, () => {
     console.log(`Server listening on Port ${SERVER_PORT}`)
 })

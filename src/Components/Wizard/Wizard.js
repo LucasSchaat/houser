@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 export default class Wizard extends Component {
     constructor(props) {
@@ -11,8 +12,31 @@ export default class Wizard extends Component {
             state: '',
             zip: 0,
         }
+        this.addHouse = this.addHouse.bind(this)
     }
     
+    handleChange = e => {
+        let {name, value} = e.target
+        this.setState({ [name]: value })
+    }
+
+    addHouse() {
+        const { propertyName, address, city, state, zip } = this.state
+        axios
+            .post ('/api/add', {propertyName, address, city, state, zip} )
+            .then(() => {
+                this.setState({
+                    propertyName: '',
+                    address: '',
+                    city:'',
+                    state: '',
+                    zip: 0,
+                })
+                return this.props.history.push('/')
+            })
+            .catch(err => console.log(err))
+    }
+
     render() {
         const { propertyName, address, city, state, zip } = this.state
         return(
@@ -23,15 +47,16 @@ export default class Wizard extends Component {
                 </div>
                 <div>
                     <div>Property Name</div>
-                    <input />
+                    <input onChange={this.handleChange} name='propertyName' value={propertyName} type='text' />
                     <div>Address</div>
-                    <input />
+                    <input onChange={this.handleChange} name='address' value={address} type='text' />
                     <div>City</div>
-                    <input />
+                    <input onChange={this.handleChange} name='city' value={city} type='text' />
                     <div>State</div>
-                    <input />
+                    <input onChange={this.handleChange} name='state' value={state} type='text' />
                     <div>Zip</div>
-                    <input name={zip} value={zip} type='number' placeholder={zip}/>
+                    <input onChange={this.handleChange} name='zip' value={zip} type='number' placeholder={zip}/>
+                    <button onClick={this.addHouse}>Complete</button>
                 </div>
             </div>
         )
