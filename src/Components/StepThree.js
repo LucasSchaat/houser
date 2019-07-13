@@ -13,13 +13,6 @@ class StepThree extends Component {
         this.addHouse = this.addHouse.bind(this)
     }
     
-    componentDidUpdate(prevProps) {
-        const reduxState = store.getState()
-        if(prevProps.data !== this.props.data) {
-            this.setState({ mortgage: reduxState.mortgage, rent: reduxState.rent })
-        }
-    }
-    
     componentDidMount() {
         store.subscribe( () => {
             const reduxState = store.getState()
@@ -66,9 +59,9 @@ class StepThree extends Component {
                         this.addStepThree()
                         console.log(store.getState())
                     }}>Previous Step</button>
-                    <button onClick = { () => {
+                    <button onClick = { async () => {
                         this.addStepThree()
-                        this.addHouse()
+                        await this.addHouse()
                         }}>Complete</button>
                 </div>
             </div>
