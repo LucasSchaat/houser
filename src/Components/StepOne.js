@@ -1,18 +1,39 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-import axios from 'axios'
+import { withRouter } from 'react-router-dom'
+import store, { STEP_ONE } from '../store'
 
-export default class StepOne extends Component {
+class StepOne extends Component {
     constructor(props) {
         super(props)
+        const reduxState = store.getState()
         this.state = {
-            propertyName: '',
-            address: '',
-            city: '',
-            state: '',
-            zip: 0,
+            propertyName: reduxState.propertyName,
+            address: reduxState.address,
+            city: reduxState.city,
+            state: reduxState.state,
+            zip: reduxState.zip
         }
-        this.addHouse = this.addHouse.bind(this)
+    }
+
+    componentDidMount() {
+        store.subscribe(() => {
+            const reduxState = store.getState()
+            this.setState ({
+            propertyName: reduxState.propertyName,
+            address: reduxState.address,
+            city: reduxState.city,
+            state: reduxState.state,
+            zip: reduxState.zip,
+            })
+        })
+    }
+
+    addStepOne = () => {
+        const { propertyName, address, city, state, zip } = this.state
+        store.dispatch({
+            type: STEP_ONE,
+            payload: { propertyName, address, city, state, zip }
+        })
     }
     
     handleChange = e => {
@@ -20,31 +41,11 @@ export default class StepOne extends Component {
         this.setState({ [name]: value })
     }
 
-    addHouse() {
-        const { propertyName, address, city, state, zip } = this.state
-        axios
-            .post ('/api/add', {propertyName, address, city, state, zip} )
-            .then(() => {
-                this.setState({
-                    propertyName: '',
-                    address: '',
-                    city:'',
-                    state: '',
-                    zip: 0,
-                })
-                return this.props.history.push('/')
-            })
-            .catch(err => console.log(err))
-    }
-
     render() {
         const { propertyName, address, city, state, zip } = this.state
+        console.log(propertyName, address, city, state, zip)
         return(
             <div className='wizard'>
-                <div className='wizardSub1'>
-                    <div>Add New Listing</div>
-                    <Link className='cancelButton' to='/' >Cancel</Link>
-                </div>
                 <div>
                     <div>Property Name</div>
                     <input onChange={this.handleChange} name='propertyName' value={propertyName} type='text' />
@@ -56,9 +57,15 @@ export default class StepOne extends Component {
                     <input onChange={this.handleChange} name='state' value={state} type='text' />
                     <div>Zip</div>
                     <input onChange={this.handleChange} name='zip' value={zip} type='number' placeholder={zip}/>
-                    <button onClick={this.addHouse}>Complete</button>
+                    <button onClick={() => {
+                        this.props.history.push('/wizard/step2')
+                        this.addStepOne()
+                        console.log(store.getState())
+                    }}>Next Step</button>
                 </div>
             </div>
         )
     }
 }
+
+export default withRouter(StepOne)
